@@ -30,10 +30,16 @@ int main(int argc, char *argv[]) {
     auto endpoints = resolver.resolve(host, port);
 
     // synchronously connect
-    asio::connect(ssl_stream.lowest_layer(), endpoints);
+    auto res2 = asio::connect(ssl_stream.lowest_layer(), endpoints);
+
+    // handshake
+    ssl_stream.handshake(asio::ssl::stream_base::handshake_type::client);
+
+    // validate certificate
+    // gonna skip this for now.
 
     // send a message
-    std::string msg{"well hello there\n"};
+    std::string msg{"hello\n"};
     auto res = asio::write(ssl_stream, asio::buffer(msg.data(), msg.length()));
 
     return 0;
